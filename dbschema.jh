@@ -1,0 +1,111 @@
+
+entity Employee {
+	name String
+    surname String
+    title TITLE
+    email String
+    active Boolean
+    birthDate LocalDate
+	phoneNumber String
+    timeToStart LocalDate
+    totalPermission Integer
+    remainPermission Integer
+}
+
+entity Permission {
+	type PermissionType
+  	code String
+    name String
+    timeToStart LocalDate
+    timeToEnd LocalDate
+    totalDaysOff Integer
+}
+
+entity Task {
+	name String
+    code String
+}
+
+enum PermissionType {
+	HEALTY, PAIDLY, UNPAIDLY, ADMINISTRATIVE
+}
+
+enum TITLE {
+	DEVELOPER, FUNCTIONAL, MANAGER, WORKER
+}
+
+entity Address {
+}
+
+entity County {
+	code String
+	name String
+}
+
+entity City {
+	code String
+	name String
+}
+
+// an ignored comment
+/** not an ignored comment */
+entity Location {
+	streetAddress String,
+	postalCode String,
+	stateProvince String
+}
+
+entity Department {
+	departmentName String required
+}
+
+relationship OneToOne {
+    Employee{address} to Address
+    Employee{department} to Department
+}
+
+relationship OneToOne {
+    Address to City
+    Address to County
+    Address to Location
+}
+
+relationship OneToOne {
+	Department{location} to Location
+    Address to Location
+}
+
+relationship ManyToMany {
+	Job{task(title)} to Task{job}
+    Employee{task} to Task{employee}
+}
+
+// defining multiple OneToMany relationships with comments
+relationship OneToMany {
+    Employee to Permission{employee}
+    City to County{city}
+	/**
+	* A relationship
+	*/
+	Department to
+	/**
+	* Another side of the same relationship
+	*/
+	Employee{department}
+}
+
+relationship ManyToOne {
+	Employee{manager} to Employee
+}
+
+// Set pagination options
+paginate Employee with infinite-scroll
+
+// Use Data Transfer Objects (DTO)
+// dto * with mapstruct
+
+// Set service options to all except few
+service all with serviceImpl except Employee, Permission, Address, Department, Task, City, County
+
+// Set an angular suffix
+// angularSuffix * with mySuffix
